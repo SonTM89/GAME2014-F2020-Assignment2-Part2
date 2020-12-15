@@ -17,7 +17,6 @@ public class BulletController : MonoBehaviour, IApplyDamage
     void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
-       // direction = Vector3.up;
     }
 
 

@@ -77,6 +77,11 @@ public class BulletFactory
                 break;
         }
 
+        if (gameController == null)
+        {
+            gameController = GameObject.FindObjectOfType<GameController>();
+        }
+
         tempBullet.transform.parent = gameController.gameObject.transform;
         tempBullet.SetActive(false);
 

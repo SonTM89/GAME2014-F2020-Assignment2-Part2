@@ -22,7 +22,7 @@ public class PlayerBehavior : MonoBehaviour
     public int health;
     public int lives;
     public BarController healthBar;
-    //public Animator livesHUD;
+    public Animator livesHUD;
 
     private Rigidbody2D m_rigidBody2D;
     private SpriteRenderer m_spriteRenderer;
@@ -31,6 +31,9 @@ public class PlayerBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        health = 100;
+        lives = 3;
+
         m_rigidBody2D = GetComponent<Rigidbody2D>();
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         m_animator = GetComponent<Animator>();
@@ -136,7 +139,7 @@ public class PlayerBehavior : MonoBehaviour
     {
         lives -= 1;
 
-        //livesHUD.SetInteger("LivesState", lives);
+        livesHUD.SetInteger("LivesState", lives);
 
         if (lives > 0)
         {
