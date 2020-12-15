@@ -136,7 +136,7 @@ public class VirtualGuyBehaviour : MonoBehaviour
 
         if (other.gameObject.CompareTag("Apple"))
         {
-            TakeDamage(5);
+            TakeDamage(10);
         }
     }
 
@@ -155,6 +155,7 @@ public class VirtualGuyBehaviour : MonoBehaviour
 
     private void Dead()
     {
+        ScoreManager.Instance().playerScore += ScoreManager.ENEMY_POINT;
         transform.parent.gameObject.SetActive(false);
     }
 }

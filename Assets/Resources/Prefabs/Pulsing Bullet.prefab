@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9020430152687007726}
   - component: {fileID: 7879489546390244261}
   - component: {fileID: 2484745531988426868}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Pulsing Bullet
   m_TagString: Apple
   m_Icon: {fileID: 0}

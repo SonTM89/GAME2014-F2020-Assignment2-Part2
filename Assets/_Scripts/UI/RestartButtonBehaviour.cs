@@ -16,13 +16,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class RestartButtonBehaviour : MonoBehaviour
 {
+    // reference to score UI
+    public TextMeshProUGUI totalScore;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        totalScore.text = ScoreManager.Instance().playerScore.ToString();
     }
 
     // Update is called once per frame

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using TMPro;
 
 [System.Serializable]
 public enum ImpulseSounds
@@ -53,6 +54,9 @@ public class PlayerBehavior : MonoBehaviour
     public float shakeTimer;
     public bool isCameraShaking;
 
+    [Header("Score Display")]
+    public TextMeshProUGUI playerScoreDisplay;
+
     [Header("Apple Firing")]
     public Transform acornSpawn;
 
@@ -64,9 +68,11 @@ public class PlayerBehavior : MonoBehaviour
     private Animator m_animator;
 
 
+
     // Start is called before the first frame update
     void Start()
     {
+        ScoreManager.Instance().playerScore = 0;
         health = 100;
         lives = 3;
 
@@ -87,6 +93,8 @@ public class PlayerBehavior : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        playerScoreDisplay.text = "Score: " + ScoreManager.Instance().playerScore.ToString();
+
         _Move();
 
         if (isCameraShaking)
@@ -200,7 +208,7 @@ public class PlayerBehavior : MonoBehaviour
             // Delay Enemy damage
             if (Time.frameCount % 20 == 0)
             {
-                TakeDamage(1);
+                TakeDamage(15);
             }
 
         }
@@ -219,6 +227,12 @@ public class PlayerBehavior : MonoBehaviour
             TakeDamage(5);
         }
 
+        if (other.gameObject.CompareTag("Gem"))
+        {
+            sounds[(int)ImpulseSounds.GEM].Play();
+            other.gameObject.SetActive(false);
+            ScoreManager.Instance().playerScore += ScoreManager.REWARD_POINT;
+        }
     }
 
 

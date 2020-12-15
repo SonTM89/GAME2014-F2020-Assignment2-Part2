@@ -9,9 +9,9 @@ TagManager:
   - Walls
   - Enemy
   - Fireball
-  - E_Fireball
   - Bullet
   - Apple
+  - Gem
   layers:
   - Default
   - TransparentFX
@@ -27,8 +27,8 @@ TagManager:
   - Enemy
   - Bullet
   - AI
-  - 
-  - 
+  - Gem
+  - Apple
   - 
   - 
   - 
