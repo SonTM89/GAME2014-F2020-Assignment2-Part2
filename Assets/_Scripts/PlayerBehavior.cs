@@ -9,25 +9,25 @@ public class PlayerBehavior : MonoBehaviour
     public float joystickVerticalSensitivity;
     public float horizontalForce;
     public float verticalForce;
-    public float maximumVelocityX;
     public bool isGrounded;
     public bool isJumping;
+    public bool isCrouching;
     public Transform spawnPoint;
 
-    private Rigidbody2D m_rigidbody2D;
+    private Rigidbody2D m_rigidBody2D;
     private SpriteRenderer m_spriteRenderer;
     private Animator m_animator;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_rigidbody2D = GetComponent<Rigidbody2D>();
+        m_rigidBody2D = GetComponent<Rigidbody2D>();
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         m_animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         _Move();
     }
@@ -36,40 +36,51 @@ public class PlayerBehavior : MonoBehaviour
     {
         if (isGrounded)
         {
-            if (joystick.Horizontal > joystickHorizontalSensitivity)
+            if (!isJumping && !isCrouching)
             {
-                // move to right
-                m_rigidbody2D.AddForce(Vector2.right * horizontalForce * Time.deltaTime);
-                m_spriteRenderer.flipX = false;
-                m_animator.SetInteger("AnimState", 1);
+                if (joystick.Horizontal > joystickHorizontalSensitivity)
+                {
+                    // move right
+                    m_rigidBody2D.AddForce(Vector2.right * horizontalForce * Time.deltaTime);
+                    m_spriteRenderer.flipX = false;
+                    m_animator.SetInteger("AnimState", (int)PlayerAnimationType.RUN);
+                }
+                else if (joystick.Horizontal < -joystickHorizontalSensitivity)
+                {
+                    // move left
+                    m_rigidBody2D.AddForce(Vector2.left * horizontalForce * Time.deltaTime);
+                    m_spriteRenderer.flipX = true;
+                    m_animator.SetInteger("AnimState", (int)PlayerAnimationType.RUN);
+                }
+                else
+                {
+                    m_animator.SetInteger("AnimState", (int)PlayerAnimationType.IDLE);
+                }
             }
 
-            else if (joystick.Horizontal < -joystickHorizontalSensitivity)
-            {
-                // move to left
-                m_rigidbody2D.AddForce(Vector2.left * horizontalForce * Time.deltaTime);
-                m_spriteRenderer.flipX = true;
-                m_animator.SetInteger("AnimState", 1);
-            }
-            else if (!isJumping)
-            {
-                // idle
-                m_animator.SetInteger("AnimState", 0);
-            }
-
-            if ((joystick.Vertical > joystickVerticalSensitivity) && !isJumping)
+            if ((joystick.Vertical > joystickVerticalSensitivity) && (!isJumping))
             {
                 // jump
-                m_rigidbody2D.AddForce(Vector2.up * verticalForce * Time.deltaTime);
-                m_animator.SetInteger("AnimState", 2);
+                m_rigidBody2D.AddForce(Vector2.up * verticalForce);
+                m_animator.SetInteger("AnimState", (int)PlayerAnimationType.JUMP);
                 isJumping = true;
             }
             else
             {
                 isJumping = false;
             }
-        }
 
+            if ((joystick.Vertical < -joystickVerticalSensitivity))
+            {
+                // crouch
+                m_animator.SetInteger("AnimState", (int)PlayerAnimationType.CROUCH);
+                isCrouching = true;
+            }
+            else
+            {
+                isCrouching = false;
+            }
+        }
 
     }
 
