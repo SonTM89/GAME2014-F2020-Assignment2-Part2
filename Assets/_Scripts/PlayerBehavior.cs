@@ -24,9 +24,14 @@ public class PlayerBehavior : MonoBehaviour
     public BarController healthBar;
     public Animator livesHUD;
 
+    [Header("Dust Trail")]
+    public ParticleSystem m_dustTrail;
+    public Color dustTrailColor;
+
     private Rigidbody2D m_rigidBody2D;
     private SpriteRenderer m_spriteRenderer;
     private Animator m_animator;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +42,7 @@ public class PlayerBehavior : MonoBehaviour
         m_rigidBody2D = GetComponent<Rigidbody2D>();
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         m_animator = GetComponent<Animator>();
+        m_dustTrail = GetComponentInChildren<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -57,6 +63,8 @@ public class PlayerBehavior : MonoBehaviour
                     m_rigidBody2D.AddForce(Vector2.right * horizontalForce * Time.deltaTime);
                     m_spriteRenderer.flipX = false;
                     m_animator.SetInteger("AnimState", (int)PlayerAnimationType.RUN);
+
+                    CreateDustTrail();
                 }
                 else if (joystick.Horizontal < -joystickHorizontalSensitivity)
                 {
@@ -64,6 +72,8 @@ public class PlayerBehavior : MonoBehaviour
                     m_rigidBody2D.AddForce(Vector2.left * horizontalForce * Time.deltaTime);
                     m_spriteRenderer.flipX = true;
                     m_animator.SetInteger("AnimState", (int)PlayerAnimationType.RUN);
+
+                    CreateDustTrail();
                 }
                 else
                 {
@@ -77,6 +87,8 @@ public class PlayerBehavior : MonoBehaviour
                 m_rigidBody2D.AddForce(Vector2.up * verticalForce);
                 m_animator.SetInteger("AnimState", (int)PlayerAnimationType.JUMP);
                 isJumping = true;
+
+                CreateDustTrail();
             }
             else
             {
@@ -164,5 +176,12 @@ public class PlayerBehavior : MonoBehaviour
         {
             LoseLife();
         }
+    }
+
+    private void CreateDustTrail()
+    {
+        m_dustTrail.GetComponent<Renderer>().material.SetColor("_Color", dustTrailColor);
+
+        m_dustTrail.Play();
     }
 }
