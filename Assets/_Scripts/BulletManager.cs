@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
+
+public enum PoolType
+{
+    ENEMY,
+    PLAYER
+}
+
 public class BulletManager
 {
     // step 1. create a private static instance
@@ -26,53 +33,91 @@ public class BulletManager
     
     public int MaxBullets { get; set; }
 
-    private Queue<GameObject> m_bulletPool;
+    private Queue<GameObject> m_playerBulletPool;
+    private Queue<GameObject> m_enemyBulletPool;
 
 
     /// <summary>
     /// This function initializes the bullet pool with the number of bullets specified and the bullet enumeration type
     /// </summary>
     /// <param name="max_bullets"></param>
-    /// <param name="type"></param>
-    public void Init(int max_bullets = 50, BulletType type = BulletType.REGULAR)
+    /// <param name="playerBulletType"></param>
+    /// <param name="enemyBulletType"></param>
+    public void Init(int max_bullets = 50, BulletType playerBulletType = BulletType.PULSING, BulletType enemyBulletType = BulletType.FAT)
     {   // step 4 initialize class variables and start the bullet pool build
         MaxBullets = max_bullets;
-        _BuildBulletPool(type);
+        _BuildBulletPool(playerBulletType, enemyBulletType);
     }
 
     /// <summary>
     /// This function creates the Object Pool for bullet Game Objects
     /// </summary>
-    /// <param name="type"></param>
-    private void _BuildBulletPool(BulletType type)
+    /// <param name="playerBulletType"></param>
+    /// <param name="enemyBulletType"></param>
+    private void _BuildBulletPool(BulletType playerBulletType, BulletType enemyBulletType)
     {
         // create empty Queue structure
-        m_bulletPool = new Queue<GameObject>();
+        m_playerBulletPool = new Queue<GameObject>();
+        m_enemyBulletPool = new Queue<GameObject>();
 
         for (int count = 0; count < MaxBullets; count++)
         {
-            var tempBullet = BulletFactory.Instance().createBullet(type);
-            m_bulletPool.Enqueue(tempBullet);
+            var tempPlayerBullet = BulletFactory.Instance().createBullet(playerBulletType);
+            m_playerBulletPool.Enqueue(tempPlayerBullet);
+
+            var tempEnemyBullet = BulletFactory.Instance().createBullet(enemyBulletType);
+            m_enemyBulletPool.Enqueue(tempEnemyBullet);
         }
     }
 
-    public GameObject GetBullet(Vector3 position, Vector3 direction)
+    public GameObject GetBullet(PoolType pool, Vector3 position, Vector3 direction)
     {
-        var newBullet = m_bulletPool.Dequeue();
-        newBullet.SetActive(true);
-        newBullet.transform.position = position;
-        newBullet.GetComponent<BulletController>().direction = direction;
+        GameObject newBullet = null;
+        switch (pool)
+        {
+            case PoolType.PLAYER:
+                newBullet = m_playerBulletPool.Dequeue();
+                newBullet.SetActive(true);
+                newBullet.transform.position = position;
+                newBullet.GetComponent<GrenadeBehaviour>().direction = direction;
+                newBullet.GetComponent<GrenadeBehaviour>().Initialize();
+                break;
+            case PoolType.ENEMY:
+                newBullet = m_enemyBulletPool.Dequeue();
+                newBullet.SetActive(true);
+                newBullet.transform.position = position;
+                newBullet.GetComponent<BulletController>().direction = direction;
+                break;
+            
+        }
+
         return newBullet;
     }
 
-    public bool HasBullets()
+    public bool HasBullets(PoolType pool)
     {
-        return m_bulletPool.Count > 0;
+        switch (pool)
+        {
+            case PoolType.ENEMY:
+                return m_enemyBulletPool.Count > 0;
+            case PoolType.PLAYER:
+                return m_playerBulletPool.Count > 0;
+            default:
+                return false;
+        }
     }
 
-    public void ReturnBullet(GameObject returnedBullet)
+    public void ReturnBullet(PoolType pool, GameObject returnedBullet)
     {
         returnedBullet.SetActive(false);
-        m_bulletPool.Enqueue(returnedBullet);
+        switch (pool)
+        {
+            case PoolType.ENEMY:
+                m_enemyBulletPool.Enqueue(returnedBullet);
+                break;
+            case PoolType.PLAYER:
+                m_playerBulletPool.Enqueue(returnedBullet);
+                break;
+        }
     }
 }

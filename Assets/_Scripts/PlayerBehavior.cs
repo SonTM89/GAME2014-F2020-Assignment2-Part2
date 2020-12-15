@@ -11,7 +11,9 @@ public enum ImpulseSounds
     HIT1,
     HIT2,
     HIT3,
-    DIE
+    DIE,
+    THROW,
+    GEM
 }
 
 
@@ -51,6 +53,12 @@ public class PlayerBehavior : MonoBehaviour
     public float shakeTimer;
     public bool isCameraShaking;
 
+    [Header("Apple Firing")]
+    public Transform acornSpawn;
+
+    [Header("Parenting")]
+    public Transform parent;
+
     private Rigidbody2D m_rigidBody2D;
     private SpriteRenderer m_spriteRenderer;
     private Animator m_animator;
@@ -61,6 +69,9 @@ public class PlayerBehavior : MonoBehaviour
     {
         health = 100;
         lives = 3;
+
+        isCameraShaking = false;
+        shakeTimer = maxShakeTime;
 
         m_rigidBody2D = GetComponent<Rigidbody2D>();
         m_spriteRenderer = GetComponent<SpriteRenderer>();
@@ -101,7 +112,7 @@ public class PlayerBehavior : MonoBehaviour
                 {
                     // move right
                     m_rigidBody2D.AddForce(Vector2.right * horizontalForce * Time.deltaTime);
-                    m_spriteRenderer.flipX = false;
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                     m_animator.SetInteger("AnimState", (int)PlayerAnimationType.RUN);
 
                     CreateDustTrail();
@@ -110,7 +121,7 @@ public class PlayerBehavior : MonoBehaviour
                 {
                     // move left
                     m_rigidBody2D.AddForce(Vector2.left * horizontalForce * Time.deltaTime);
-                    m_spriteRenderer.flipX = true;
+                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
                     m_animator.SetInteger("AnimState", (int)PlayerAnimationType.RUN);
 
                     CreateDustTrail();
@@ -141,6 +152,16 @@ public class PlayerBehavior : MonoBehaviour
                 // crouch
                 m_animator.SetInteger("AnimState", (int)PlayerAnimationType.CROUCH);
                 isCrouching = true;
+
+                //delay bullet firing
+                if (Time.frameCount % 20 == 0 && BulletManager.Instance().HasBullets(PoolType.PLAYER))
+                {
+                    var firingDirection = Vector3.up + Vector3.right * transform.localScale.x;
+
+                    BulletManager.Instance().GetBullet(PoolType.PLAYER, acornSpawn.position, firingDirection);
+
+                    sounds[(int)ImpulseSounds.THROW].Play();
+                }
             }
             else
             {
@@ -177,9 +198,9 @@ public class PlayerBehavior : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             // Delay Enemy damage
-            if (Time.frameCount % 60 == 0)
+            if (Time.frameCount % 20 == 0)
             {
-                TakeDamage(5);
+                TakeDamage(1);
             }
 
         }

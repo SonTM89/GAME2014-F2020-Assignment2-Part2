@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class VirtualGuyBehaviour : MonoBehaviour
 {
+    [Header("Movement")]
     public float runForce;
     public Rigidbody2D rigidbody;
     public Transform lookInFrontPoint;
@@ -12,18 +13,27 @@ public class VirtualGuyBehaviour : MonoBehaviour
     public LayerMask collisionGroundLayer;
     public bool isGroundAhead;
 
+    [Header("AI")]
     public LOS virtualGuyLOS;
+
+    [Header("Abilities")]
+    public int health;
+    public BarController healthBar;
 
     [Header("Bullet Firing")]
     public Transform bulletSpawn;
     public float fireDelay;
     public PlayerBehavior player;
 
+    private AudioSource hitSound;
+
     // Start is called before the first frame update
     void Start()
     {
+        health = 100;
         rigidbody = GetComponent<Rigidbody2D>();
         player = GameObject.FindObjectOfType<PlayerBehavior>();
+        hitSound = GetComponent<AudioSource>(); 
     }
 
     // Update is called once per frame
@@ -48,14 +58,14 @@ public class VirtualGuyBehaviour : MonoBehaviour
     private void _FireBullet()
     {
         //delay bullet firing
-        if (Time.frameCount % fireDelay == 60 && BulletManager.Instance().HasBullets())
+        if (Time.frameCount % fireDelay == 0 && BulletManager.Instance().HasBullets(PoolType.ENEMY))
         {
             var playerPosition = player.transform.position;
             var firingDirection = Vector3.Normalize(playerPosition - bulletSpawn.position);
 
             Debug.Log(firingDirection.ToString());
 
-            BulletManager.Instance().GetBullet(bulletSpawn.position, firingDirection);
+            BulletManager.Instance().GetBullet(PoolType.ENEMY, bulletSpawn.position, firingDirection);
         }
     }
 
@@ -114,5 +124,37 @@ public class VirtualGuyBehaviour : MonoBehaviour
     private void _FlipX()
     {
         transform.localScale = new Vector3(transform.localScale.x * -1.0f, transform.localScale.y, transform.localScale.z);
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("DeathPlane"))
+        {
+            Dead();
+        }
+
+        if (other.gameObject.CompareTag("Apple"))
+        {
+            TakeDamage(5);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        healthBar.SetValue(health);
+        hitSound.Play();
+        
+
+        if (health <= 0)
+        {
+            Dead();
+        }
+    }
+
+    private void Dead()
+    {
+        transform.parent.gameObject.SetActive(false);
     }
 }

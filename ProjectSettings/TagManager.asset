@@ -11,6 +11,7 @@ TagManager:
   - Fireball
   - E_Fireball
   - Bullet
+  - Apple
   layers:
   - Default
   - TransparentFX

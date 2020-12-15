@@ -6,12 +6,13 @@ public class GameController : MonoBehaviour
 {
     [Header("Bullet Related")]
     public int MaxBullets;
-    public BulletType bulletType;
+    public BulletType playerBulletType;
+    public BulletType enemyBulletType;
 
     // Start is called before the first frame update
     void Start()
     {
-        BulletManager.Instance().Init(MaxBullets, bulletType);
+        BulletManager.Instance().Init(MaxBullets, playerBulletType, enemyBulletType);
     }
 
     // Update is called once per frame

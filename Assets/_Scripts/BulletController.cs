@@ -37,7 +37,8 @@ public class BulletController : MonoBehaviour, IApplyDamage
         {
             if (colliders[0] != null)
             {
-                BulletManager.Instance().ReturnBullet(gameObject);
+                BulletManager.Instance().ReturnBullet(PoolType.ENEMY, gameObject);
+                colliders.Clear();
             }
         }
     }
@@ -52,7 +53,7 @@ public class BulletController : MonoBehaviour, IApplyDamage
     {
         if (transform.position.y > verticalBoundary)
         {
-            BulletManager.Instance().ReturnBullet(gameObject);
+            BulletManager.Instance().ReturnBullet(PoolType.ENEMY, gameObject);
         }
     }
 

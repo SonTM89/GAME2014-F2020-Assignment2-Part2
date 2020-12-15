@@ -69,11 +69,11 @@ public class BulletFactory
                 break;
             case BulletType.FAT:
                 tempBullet = MonoBehaviour.Instantiate(fatBullet);
-                tempBullet.GetComponent<BulletController>().damage = 20;
+                tempBullet.GetComponent<BulletController>().damage = 10;
                 break;
             case BulletType.PULSING:
                 tempBullet = MonoBehaviour.Instantiate(pulsingBullet);
-                tempBullet.GetComponent<BulletController>().damage = 30;
+                tempBullet.GetComponent<GrenadeBehaviour>().damage = 10;
                 break;
         }
 
