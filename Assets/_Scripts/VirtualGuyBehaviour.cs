@@ -48,7 +48,7 @@ public class VirtualGuyBehaviour : MonoBehaviour
     private void _FireBullet()
     {
         //delay bullet firing
-        if (Time.frameCount % fireDelay == 0 && BulletManager.Instance().HasBullets())
+        if (Time.frameCount % fireDelay == 60 && BulletManager.Instance().HasBullets())
         {
             var playerPosition = player.transform.position;
             var firingDirection = Vector3.Normalize(playerPosition - bulletSpawn.position);
