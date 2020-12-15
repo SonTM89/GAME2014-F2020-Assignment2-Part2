@@ -11,24 +11,70 @@ public class VirtualGuyBehaviour : MonoBehaviour
     public LayerMask collisionWallLayer;
     public LayerMask collisionGroundLayer;
     public bool isGroundAhead;
-    public bool onRamp;
+
+    public LOS virtualGuyLOS;
+
+    [Header("Bullet Firing")]
+    public Transform bulletSpawn;
+    public float fireDelay;
+    public PlayerBehavior player;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        player = GameObject.FindObjectOfType<PlayerBehavior>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        if(_hasLOS())
+        {
+            Debug.Log("See player!");
+            _FireBullet();
+        }
+        else
+        {
+            Debug.Log("No");
+        }
+
         _LookInFront();
         _LookAhead();
         _Move();
     }
 
 
-    private void _LookInFront()
+    private void _FireBullet()
+    {
+        //delay bullet firing
+        if (Time.frameCount % fireDelay == 0 && BulletManager.Instance().HasBullets())
+        {
+            var playerPosition = player.transform.position;
+            var firingDirection = Vector3.Normalize(playerPosition - bulletSpawn.position);
+
+            Debug.Log(firingDirection.ToString());
+
+            BulletManager.Instance().GetBullet(bulletSpawn.position, firingDirection);
+        }
+    }
+
+
+
+    private bool _hasLOS()
+    {
+        if (virtualGuyLOS.colliders.Count > 0)
+        {
+            if (virtualGuyLOS.collidesWith.gameObject.name == "Player" && virtualGuyLOS.colliders[0].gameObject.name == "Player")
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+        private void _LookInFront()
     {
         var wallHit = Physics2D.Linecast(transform.position, lookInFrontPoint.position, collisionWallLayer);
 

@@ -7,6 +7,10 @@ TagManager:
   - DeathPlane
   - Platforms
   - Walls
+  - Enemy
+  - Fireball
+  - E_Fireball
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -18,10 +22,10 @@ TagManager:
   - 
   - Platforms
   - Walls
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Bullet
+  - AI
   - 
   - 
   - 
