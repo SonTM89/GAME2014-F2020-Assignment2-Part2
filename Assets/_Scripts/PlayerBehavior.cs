@@ -191,6 +191,12 @@ public class PlayerBehavior : MonoBehaviour
             TakeDamage(10);
         }
 
+        if (other.gameObject.CompareTag("Moving Platform"))
+        {
+            isGrounded = true;
+            other.gameObject.GetComponent<MovingPlatformController>().isActive = true;
+            transform.SetParent(other.gameObject.transform);
+        }
     }
 
     private void OnCollisionExit2D(Collision2D other)
@@ -198,6 +204,13 @@ public class PlayerBehavior : MonoBehaviour
         if (other.gameObject.CompareTag("Platforms"))
         {
             isGrounded = false;
+        }
+
+        if (other.gameObject.CompareTag("Moving Platform"))
+        {
+            isGrounded = false;
+            other.gameObject.GetComponent<MovingPlatformController>().isActive = false;
+            transform.SetParent(parent);
         }
     }
 
@@ -208,7 +221,7 @@ public class PlayerBehavior : MonoBehaviour
             // Delay Enemy damage
             if (Time.frameCount % 20 == 0)
             {
-                TakeDamage(15);
+                TakeDamage(2);
             }
 
         }
@@ -251,6 +264,8 @@ public class PlayerBehavior : MonoBehaviour
             transform.position = spawnPoint.position;
             health = 100;
             healthBar.SetValue(health);
+
+            FindObjectOfType<GameController>().ResetAllPlatforms();
         }
         else
         {

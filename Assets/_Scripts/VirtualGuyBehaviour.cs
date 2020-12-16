@@ -136,7 +136,7 @@ public class VirtualGuyBehaviour : MonoBehaviour
 
         if (other.gameObject.CompareTag("Apple"))
         {
-            TakeDamage(10);
+            TakeDamage(20);
         }
     }
 

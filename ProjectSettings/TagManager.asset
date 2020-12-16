@@ -12,6 +12,7 @@ TagManager:
   - Bullet
   - Apple
   - Gem
+  - Moving Platform
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - AI
   - Gem
   - Apple
-  - 
+  - Moving Platforms
   - 
   - 
   - 
