@@ -188,7 +188,7 @@ public class PlayerBehavior : MonoBehaviour
 
         if (other.gameObject.CompareTag("Enemy"))
         {
-            TakeDamage(10);
+            TakeDamage(7);
         }
 
         if (other.gameObject.CompareTag("Moving Platform"))
@@ -221,7 +221,7 @@ public class PlayerBehavior : MonoBehaviour
             // Delay Enemy damage
             if (Time.frameCount % 20 == 0)
             {
-                TakeDamage(2);
+                TakeDamage(1);
             }
 
         }
@@ -237,7 +237,7 @@ public class PlayerBehavior : MonoBehaviour
 
         if (other.gameObject.CompareTag("Bullet"))
         {
-            TakeDamage(5);
+            TakeDamage(3);
         }
 
         if (other.gameObject.CompareTag("Gem"))
