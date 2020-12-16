@@ -3,9 +3,9 @@
 //
 // Manage Player score
 //
-// Created by Tran Minh Son on Oct 24 2020
+// Created by Tran Minh Son on Dec 15 2020
 // StudentID: 101137552
-// Date last Modified: Oct 25 2020
+// Date last Modified: Dec 15 2020
 // Rev: 1.1
 //  
 // Copyright © 2020 Tran Minh Son. All rights reserved.
